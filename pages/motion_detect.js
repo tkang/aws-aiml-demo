@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Storage } from "aws-amplify";
 
+const IMAGE_SCORE_DIFF_THRESHOLD = 10000;
+
 const PIXEL_SCORE_THRESHOLD = 50;
 
 function calculateImageScore(imageData) {
@@ -135,7 +137,7 @@ function VideoSection() {
   };
 
   useEffect(() => {
-    if (scoreDiff <= 10000) {
+    if (scoreDiff <= IMAGE_SCORE_DIFF_THRESHOLD) {
       console.log("No movement detected...");
     } else {
       console.log("movement detected...");
@@ -195,7 +197,14 @@ function VideoSection() {
   return (
     <div className="p-2">
       <div className="p-2">
-        Current Score = {imageScore} | Diff = {scoreDiff}
+        Current Score = {imageScore} |{" "}
+        <span
+          className={
+            scoreDiff >= IMAGE_SCORE_DIFF_THRESHOLD ? "text-red-500" : ""
+          }
+        >
+          Diff = {scoreDiff}
+        </span>
       </div>
       <video
         id="video"
