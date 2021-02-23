@@ -1,19 +1,33 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Link from "next/link";
+import { AmplifySignOut } from "@aws-amplify/ui-react";
+import styles from "../styles/Home.module.css";
 
-export default function Home() {
+export default function Home({ user }) {
   return (
-    <div className={styles.container}>
+    <div className="container mx-auto">
       <Head>
-        <title>Create Next App</title>
+        <title>AWS AI/ML Demo's</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      <nav className="flex justify-between items-center p-2">
+        <div className="text-2xl">
+          <Link href="/">AWS AI/ML Demo's</Link>
+        </div>
+        <div>{user && <AmplifySignOut />}</div>
+      </nav>
 
+      <main className={styles.main}>
+        <h1 className={styles.title}>Welcome to AWS AI/ML Demo's</h1>
+      </main>
+
+      <footer className={styles.footer}>Made by &#128062;&#128062;</footer>
+    </div>
+  );
+}
+
+/*
         <p className={styles.description}>
           Get started by editing{' '}
           <code className={styles.code}>pages/index.js</code>
@@ -48,18 +62,4 @@ export default function Home() {
             </p>
           </a>
         </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
-}
+*/
