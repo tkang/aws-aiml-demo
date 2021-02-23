@@ -9,11 +9,11 @@ export default function Home({ user }) {
       <MyHead />
       <MyNav user={user} />
 
-      <main>
+      <main className="justify-center items-center flex flex-1 flex-col">
         <h1 className="text-3xl text-center">Welcome to AWS AI/ML Demo's</h1>
         <div className="grid grid-cols-2 gap-4 text-center p-4">
           <div className="text-2xl border p-2">
-            <Link href="/rekognition">Rekognition Demo</Link>
+            <Link href="/motion_detect">Motion Detect Demo</Link>
           </div>
           <div className="text-2xl border p-2">2</div>
           <div className="text-2xl border p-2">3</div>

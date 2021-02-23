@@ -13,5 +13,11 @@
       "dependsOn": [],
       "customAuth": false
     }
+  },
+  "storage": {
+    "awsaimldemo": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }

@@ -3,6 +3,7 @@ import MyFooter from "../components/MyFooter";
 import MyNav from "../components/MyNav";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Storage } from "aws-amplify";
 
 const PIXEL_SCORE_THRESHOLD = 50;
 
@@ -24,14 +25,14 @@ function getDiff(x, y) {
   return Math.abs(x - y);
 }
 
-export default function Rekognition({ user }) {
+export default function MotionDetect({ user }) {
   return (
     <div className="container mx-auto">
-      <MyHead title="Rekognition Demo" />
+      <MyHead title="Motion Detect Demo" />
       <MyNav user={user} />
 
       <main className="justify-center items-center flex flex-1 flex-col">
-        <h1 className="text-3xl text-center">Rekognition Demo</h1>
+        <h1 className="text-3xl text-center">Motion Detect Demo</h1>
         <VideoSection />
       </main>
 
@@ -47,8 +48,9 @@ function VideoSection() {
 
   const [streamWidth, setStreamWidth] = useState(null);
   const [streamHeight, setStreamHeight] = useState(null);
-  const [imageScore, setImageScore] = useState(0);
   const [isActive, setIsActive] = useState(false);
+
+  const [imageScore, setImageScore] = useState(0);
   const [scoreDiff, setScoreDiff] = useState(0);
 
   useEffect(() => {
@@ -130,8 +132,9 @@ function VideoSection() {
 
     const newScore = getImageData(imageData);
     const prevScore = imageScore;
-    setImageScore(newScore);
     const diff = getDiff(newScore, prevScore);
+
+    setImageScore(newScore);
     setScoreDiff(diff);
 
     console.log("prevScore = ", prevScore);
@@ -195,6 +198,9 @@ function VideoSection() {
 
   return (
     <div className="p-2">
+      <div className="p-2">
+        Current Score = {imageScore} | Diff = {scoreDiff}
+      </div>
       <video
         id="video"
         style={{ height: streamHeight }}
