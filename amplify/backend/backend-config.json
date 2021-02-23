@@ -20,5 +20,22 @@
       "providerPlugin": "awscloudformation"
     }
   },
-  "api": {}
+  "api": {
+    "awsaimldemo": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authawsaimldemo592b9669"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        }
+      }
+    }
+  },
+  "function": {}
 }

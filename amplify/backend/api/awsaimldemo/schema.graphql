@@ -1,0 +1,6 @@
+type ImageData @model @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  imageKey: String
+  rekognitionData: String
+  imageTypes: [String]
+}
