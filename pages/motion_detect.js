@@ -7,7 +7,7 @@ import { Storage } from "aws-amplify";
 
 const PIXEL_SCORE_THRESHOLD = 50;
 
-function getImageData(imageData) {
+function calculateImageScore(imageData) {
   let imageScore = 0;
   for (let i = 0; i < imageData.data.length; i += 4) {
     let r = imageData.data[i] / 3;
@@ -87,7 +87,8 @@ function VideoSection() {
   useEffect(() => {
     let intervalId;
     if (isActive) {
-      setImageScoreFromImageData();
+      const score = calculateCurrentImageScore();
+      setImageScore(score);
       intervalId = setInterval(() => {
         checkImageDiff();
       }, 1000);
@@ -103,13 +104,12 @@ function VideoSection() {
     setIsActive(true);
   };
 
-  const cancelTracking = () => {
+  const stopTracking = () => {
     console.log("Stop tracking -----");
     setIsActive(false);
   };
 
-  const setImageScoreFromImageData = () => {
-    console.log(imageContext);
+  const calculateCurrentImageScore = () => {
     imageContext.drawImage(video, 0, 0, streamWidth, streamHeight);
     const imageData = imageContext.getImageData(
       0,
@@ -117,20 +117,12 @@ function VideoSection() {
       streamWidth,
       streamHeight
     );
-    const is = getImageData(imageData);
-    setImageScore(is);
+    const score = calculateImageScore(imageData);
+    return score;
   };
 
   const checkImageDiff = () => {
-    imageContext.drawImage(video, 0, 0, streamWidth, streamHeight);
-    const imageData = imageContext.getImageData(
-      0,
-      0,
-      streamWidth,
-      streamHeight
-    );
-
-    const newScore = getImageData(imageData);
+    const newScore = calculateCurrentImageScore();
     const prevScore = imageScore;
     const diff = getDiff(newScore, prevScore);
 
@@ -147,7 +139,7 @@ function VideoSection() {
       console.log("No movement detected...");
     } else {
       console.log("movement detected...");
-      cancelTracking();
+      stopTracking();
       setTimeout(() => {
         console.log("restarting tracking...");
         startTracking();
@@ -156,7 +148,7 @@ function VideoSection() {
     }
   }, [scoreDiff]);
 
-  const saveImageFromCanvas = () => {
+  const saveImageFromCanvas = async () => {
     let image = new Image();
     image.id = "pic" + uuidv4();
     let canvas = document.getElementById("canvas");
@@ -169,7 +161,11 @@ function VideoSection() {
     let file = new Blob([new Uint8Array(array)], { type: "image/jpg" });
     const fileName = `images/${uuidv4()}_snapshot.jpg`;
     console.log("fileName: ", fileName);
+
     return;
+
+    const storagePutResult = await Storage.put(fileName, file);
+    console.log(storagePutResult);
 
     Storage.put(fileName, file)
       .then(() => {
@@ -220,7 +216,7 @@ function VideoSection() {
         <button className="border text-xl p-3 m-2" onClick={startTracking}>
           Start Tracking
         </button>
-        <button className="border text-xl p-3 m-2" onClick={cancelTracking}>
+        <button className="border text-xl p-3 m-2" onClick={stopTracking}>
           Stop Tracking
         </button>
       </div>
