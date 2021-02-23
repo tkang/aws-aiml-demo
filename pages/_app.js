@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+
 import React from 'react';
 import Amplify from 'aws-amplify';
 import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
