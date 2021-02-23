@@ -1,6 +1,11 @@
-type ImageData @model @auth(rules: [{ allow: owner }]) {
+type ImageData @model @auth(rules: [{ allow: private }, { allow: public }]) {
   id: ID!
   imageKey: String
   rekognitionData: String
   imageTypes: [String]
+}
+
+type Query {
+  process(imageKey: String!): ImageData
+    @function(name: "awsaimldemo48ccc8c3rekognition-${env}")
 }

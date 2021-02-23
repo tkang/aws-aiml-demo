@@ -20,6 +20,38 @@
       },
       "auth": {
         "awsaimldemo592b9669": {}
+      },
+      "function": {
+        "awsaimldemo48ccc8c3rekognition": {
+          "deploymentBucketName": "amplify-awsaimldemo-dev-102959-deployment",
+          "s3Key": "amplify-builds/awsaimldemo48ccc8c3rekognition-457054786d6b46314139-build.zip"
+        },
+        "awsaimldemobe3581b3": {
+          "deploymentBucketName": "amplify-awsaimldemo-dev-102959-deployment",
+          "s3Key": "amplify-builds/awsaimldemobe3581b3-build.zip"
+        }
+      }
+    },
+    "nonCFNdata": {
+      "function": {
+        "awsaimldemobe3581b3": {
+          "layerVersionMap": {
+            "1": {
+              "permissions": [
+                {
+                  "type": "awsAccounts",
+                  "accounts": [
+                    "542652840554"
+                  ]
+                },
+                {
+                  "type": "private"
+                }
+              ],
+              "hash": "O442tUZljjfZ+LYPmD7PwPifgC9h8nUUMOymfTSfs4M="
+            }
+          }
+        }
       }
     }
   }

@@ -1,0 +1,9 @@
+{
+  "lambdaLayers": [
+    {
+      "type": "ProjectLayer",
+      "resourceName": "awsaimldemobe3581b3",
+      "version": 1
+    }
+  ]
+}

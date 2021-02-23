@@ -2,41 +2,38 @@
 // this is an auto generated file. This will be overwritten
 
 export const onCreateImageData = /* GraphQL */ `
-  subscription OnCreateImageData($owner: String!) {
-    onCreateImageData(owner: $owner) {
+  subscription OnCreateImageData {
+    onCreateImageData {
       id
       imageKey
       rekognitionData
       imageTypes
       createdAt
       updatedAt
-      owner
     }
   }
 `;
 export const onUpdateImageData = /* GraphQL */ `
-  subscription OnUpdateImageData($owner: String!) {
-    onUpdateImageData(owner: $owner) {
+  subscription OnUpdateImageData {
+    onUpdateImageData {
       id
       imageKey
       rekognitionData
       imageTypes
       createdAt
       updatedAt
-      owner
     }
   }
 `;
 export const onDeleteImageData = /* GraphQL */ `
-  subscription OnDeleteImageData($owner: String!) {
-    onDeleteImageData(owner: $owner) {
+  subscription OnDeleteImageData {
+    onDeleteImageData {
       id
       imageKey
       rekognitionData
       imageTypes
       createdAt
       updatedAt
-      owner
     }
   }
 `;

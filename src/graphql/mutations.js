@@ -13,7 +13,6 @@ export const createImageData = /* GraphQL */ `
       imageTypes
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -29,7 +28,6 @@ export const updateImageData = /* GraphQL */ `
       imageTypes
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -45,7 +43,6 @@ export const deleteImageData = /* GraphQL */ `
       imageTypes
       createdAt
       updatedAt
-      owner
     }
   }
 `;

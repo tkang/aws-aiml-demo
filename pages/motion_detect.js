@@ -3,7 +3,8 @@ import MyFooter from "../components/MyFooter";
 import MyNav from "../components/MyNav";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Storage } from "aws-amplify";
+import { Storage, API, graphqlOperation } from "aws-amplify";
+import * as queries from "../src/graphql/queries";
 
 const IMAGE_SCORE_DIFF_THRESHOLD = 10000;
 
@@ -54,6 +55,7 @@ function VideoSection() {
 
   const [imageScore, setImageScore] = useState(0);
   const [scoreDiff, setScoreDiff] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     console.log("hello");
@@ -164,11 +166,22 @@ function VideoSection() {
     const fileName = `images/${uuidv4()}_snapshot.jpg`;
     console.log("fileName: ", fileName);
 
-    return;
+    setIsProcessing(true);
+    try {
+      const storagePutResult = await Storage.put(fileName, file);
+      console.log(storagePutResult);
+      const imageInfo = { imageKey: fileName };
+      const data = await API.graphql(
+        graphqlOperation(queries.process, imageInfo)
+      );
+      const rekognitionData = JSON.parse(data.data.process.rekognitionData);
+      console.log("rekognitionData: ", rekognitionData);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+    setIsProcessing(false);
 
-    const storagePutResult = await Storage.put(fileName, file);
-    console.log(storagePutResult);
-
+    /*
     Storage.put(fileName, file)
       .then(() => {
         const imageInfo = { imageKey: fileName };
@@ -192,6 +205,7 @@ function VideoSection() {
           processing: false,
         });
       });
+      */
   };
 
   return (

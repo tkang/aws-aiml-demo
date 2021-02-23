@@ -32,10 +32,38 @@
               "userPoolId": "authawsaimldemo592b9669"
             }
           },
-          "additionalAuthenticationProviders": []
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 7,
+                "description": ""
+              }
+            }
+          ]
         }
       }
     }
   },
-  "function": {}
+  "function": {
+    "awsaimldemo48ccc8c3rekognition": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "awsaimldemobe3581b3",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
+    },
+    "awsaimldemobe3581b3": {
+      "providerPlugin": "awscloudformation",
+      "service": "LambdaLayer",
+      "build": true
+    }
+  }
 }
