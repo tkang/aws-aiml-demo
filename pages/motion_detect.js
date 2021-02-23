@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Storage, API, graphqlOperation } from "aws-amplify";
 import * as queries from "../src/graphql/queries";
+import * as subscriptions from "../src/graphql/subscriptions";
 
 const IMAGE_SCORE_DIFF_THRESHOLD = 10000;
 
@@ -44,6 +45,31 @@ export default function MotionDetect({ user }) {
   );
 }
 
+const useLabels = () => {
+  const [labels, setLabels] = useState([]);
+  let [subscription, setSubscription] = useState(null);
+
+  useEffect(() => {
+    setSubscription(subscribeToLabelCreate());
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const subscribeToLabelCreate = async () => {
+    const s = await API.graphql(
+      graphqlOperation(subscriptions.onCreateImageData)
+    );
+    s.subscribe({
+      next: ({ provider, value }) => {
+        console.log({ provider, value });
+      },
+    });
+    return s;
+  };
+
+  return { labels, setLabels };
+};
+
 function VideoSection() {
   const [video, setVideo] = useState(null);
   const [canvas, setCanvas] = useState({});
@@ -56,6 +82,7 @@ function VideoSection() {
   const [imageScore, setImageScore] = useState(0);
   const [scoreDiff, setScoreDiff] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { labels, setLabels } = useLabels();
 
   useEffect(() => {
     console.log("hello");
@@ -152,7 +179,7 @@ function VideoSection() {
     }
   }, [scoreDiff]);
 
-  const saveImageFromCanvas = async () => {
+  const createImageFile = () => {
     let image = new Image();
     image.id = "pic" + uuidv4();
     let canvas = document.getElementById("canvas");
@@ -164,6 +191,12 @@ function VideoSection() {
     }
     let file = new Blob([new Uint8Array(array)], { type: "image/jpg" });
     const fileName = `images/${uuidv4()}_snapshot.jpg`;
+
+    return { file, fileName };
+  };
+
+  const saveImageFromCanvas = async () => {
+    const { file, fileName } = createImageFile();
     console.log("fileName: ", fileName);
 
     setIsProcessing(true);
@@ -175,51 +208,18 @@ function VideoSection() {
         graphqlOperation(queries.process, imageInfo)
       );
       const rekognitionData = JSON.parse(data.data.process.rekognitionData);
+      console.log("data processed at = ", data.data.process);
       console.log("rekognitionData: ", rekognitionData);
+      setLabels(rekognitionData.Labels);
+      //await Storage.remove(fileName);
     } catch (error) {
       console.log("error: ", error);
     }
     setIsProcessing(false);
-
-    /*
-    Storage.put(fileName, file)
-      .then(() => {
-        const imageInfo = { imageKey: fileName };
-        API.graphql(graphqlOperation(processImage, imageInfo))
-          .then((data) => {
-            const rekognitionData = JSON.parse(
-              data.data.process.rekognitionData
-            );
-            console.log("rekognitionData: ", rekognitionData);
-          })
-          .catch((error) => {
-            console.log("error: ", error);
-            this.setState({
-              processing: false,
-            });
-          });
-      })
-      .catch((err) => {
-        console.log("error from upload: ", err);
-        this.setState({
-          processing: false,
-        });
-      });
-      */
   };
 
   return (
     <div className="p-2">
-      <div className="p-2">
-        Current Score = {imageScore} |{" "}
-        <span
-          className={
-            scoreDiff >= IMAGE_SCORE_DIFF_THRESHOLD ? "text-red-500" : ""
-          }
-        >
-          Diff = {scoreDiff}
-        </span>
-      </div>
       <video
         id="video"
         style={{ height: streamHeight }}
@@ -243,6 +243,32 @@ function VideoSection() {
           Stop Tracking
         </button>
       </div>
+      <div className="p-2">
+        Current Score = {imageScore} |{" "}
+        <span
+          className={
+            scoreDiff >= IMAGE_SCORE_DIFF_THRESHOLD ? "text-red-500" : ""
+          }
+        >
+          Diff = {scoreDiff}
+        </span>
+      </div>
+      {isProcessing && <div className="p-2 text-xl">Processing...</div>}
+      <Labels labels={labels} />
+    </div>
+  );
+}
+
+function Labels({ labels }) {
+  if (labels.length === 0) return <div></div>;
+
+  return (
+    <div className="p-2">
+      {labels.map((label) => (
+        <div key={label.Name}>
+          {label.Name} at {label.Confidence}
+        </div>
+      ))}
     </div>
   );
 }
