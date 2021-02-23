@@ -18,8 +18,16 @@ export default function Home({ user }) {
         <div>{user && <AmplifySignOut />}</div>
       </nav>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>Welcome to AWS AI/ML Demo's</h1>
+      <main>
+        <h1 className="text-3xl text-center">Welcome to AWS AI/ML Demo's</h1>
+        <div className="grid grid-cols-3 gap-4 text-center p-4">
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+          <div>4</div>
+          <div>5</div>
+          <div>6</div>
+        </div>
       </main>
 
       <footer className={styles.footer}>Made by &#128062;&#128062;</footer>
