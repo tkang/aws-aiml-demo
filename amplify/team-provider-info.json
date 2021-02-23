@@ -24,7 +24,7 @@
       "function": {
         "awsaimldemo48ccc8c3rekognition": {
           "deploymentBucketName": "amplify-awsaimldemo-dev-102959-deployment",
-          "s3Key": "amplify-builds/awsaimldemo48ccc8c3rekognition-457054786d6b46314139-build.zip"
+          "s3Key": "amplify-builds/awsaimldemo48ccc8c3rekognition-6c6d4e364f7a6e2f386f-build.zip"
         },
         "awsaimldemobe3581b3": {
           "deploymentBucketName": "amplify-awsaimldemo-dev-102959-deployment",
