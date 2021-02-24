@@ -30,13 +30,14 @@ function getDiff(x, y) {
 }
 
 export default function MotionDetect({ user }) {
+  const title = "Motion Capture and Process with Rekognition";
   return (
     <div className="container mx-auto">
-      <MyHead title="Motion Detect Demo" />
+      <MyHead title={title} />
       <MyNav user={user} />
 
       <main className="justify-center items-center flex flex-1 flex-col">
-        <h1 className="text-3xl text-center">Motion Detect Demo</h1>
+        <h1 className="text-3xl text-center">{title}</h1>
         <VideoSection />
       </main>
 

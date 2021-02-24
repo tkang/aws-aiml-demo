@@ -12,12 +12,14 @@ export default function Home({ user }) {
       <main className="justify-center items-center flex flex-1 flex-col">
         <h1 className="text-3xl text-center">Welcome to AWS AI/ML Demo's</h1>
         <div className="grid grid-cols-2 gap-4 text-center p-4">
-          <div className="text-2xl border p-2">
-            <Link href="/motion_detect">Motion Detect Demo</Link>
+          <div className="text-xl border p-4">
+            <Link href="/motion_detect">
+              Motion Capture and Process with Rekognition
+            </Link>
           </div>
-          <div className="text-2xl border p-2">2</div>
-          <div className="text-2xl border p-2">3</div>
-          <div className="text-2xl border p-2">4</div>
+          <div className="text-xl border p-4">2</div>
+          <div className="text-xl border p-4">3</div>
+          <div className="text-xl border p-4">4</div>
         </div>
       </main>
 
