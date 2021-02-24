@@ -70,6 +70,16 @@ const useLabels = () => {
   return { labels, setLabels };
 };
 
+const useIsActive = () => {
+  const [isActive, setIsActive] = useState(false);
+  return { isActive, setIsActive };
+};
+
+const useMovementDetected = () => {
+  const [movementDetected, setMovementDetected] = useState(false);
+  return { movementDetected, setMovementDetected };
+};
+
 function VideoSection() {
   const [video, setVideo] = useState(null);
   const [canvas, setCanvas] = useState({});
@@ -77,7 +87,8 @@ function VideoSection() {
 
   const [streamWidth, setStreamWidth] = useState(null);
   const [streamHeight, setStreamHeight] = useState(null);
-  const [isActive, setIsActive] = useState(false);
+  const { isActive, setIsActive } = useIsActive();
+  const { movementDetected, setMovementDetected } = useMovementDetected();
 
   const [imageScore, setImageScore] = useState(0);
   const [scoreDiff, setScoreDiff] = useState(0);
@@ -130,6 +141,28 @@ function VideoSection() {
     return () => clearInterval(intervalId);
   }, [isActive]);
 
+  useEffect(() => {
+    if (scoreDiff <= IMAGE_SCORE_DIFF_THRESHOLD) {
+      console.log("No movement detected...");
+      return;
+    }
+
+    setMovementDetected(true);
+  }, [scoreDiff]);
+
+  useEffect(() => {
+    if (movementDetected) {
+      console.log("movement detected...");
+      stopTracking();
+      setTimeout(() => {
+        console.log("restarting tracking...");
+        startTracking();
+        setMovementDetected(false);
+      }, 5000);
+      saveImageFromCanvas();
+    }
+  }, [movementDetected]);
+
   const startTracking = () => {
     console.log("Start tracking");
     setIsActive(true);
@@ -164,20 +197,6 @@ function VideoSection() {
     console.log("newScore = ", newScore);
     console.log("diff: ", diff);
   };
-
-  useEffect(() => {
-    if (scoreDiff <= IMAGE_SCORE_DIFF_THRESHOLD) {
-      console.log("No movement detected...");
-    } else {
-      console.log("movement detected...");
-      stopTracking();
-      setTimeout(() => {
-        console.log("restarting tracking...");
-        startTracking();
-      }, 5000);
-      saveImageFromCanvas();
-    }
-  }, [scoreDiff]);
 
   const createImageFile = () => {
     let image = new Image();
@@ -235,26 +254,46 @@ function VideoSection() {
           }}
         ></canvas>
       </video>
-      <div className="flex items-center justify-between">
-        <button className="border text-xl p-3 m-2" onClick={startTracking}>
-          Start Tracking
-        </button>
-        <button className="border text-xl p-3 m-2" onClick={stopTracking}>
-          Stop Tracking
-        </button>
+      <div className="flex items-center justify-center">
+        {movementDetected ? (
+          <div className="text-xl p2">Movement Detected!</div>
+        ) : (
+          <>
+            {!isActive ? (
+              <button
+                className="border text-xl p-3 m-2"
+                onClick={startTracking}
+              >
+                Start Tracking
+              </button>
+            ) : (
+              <button className="border text-xl p-3 m-2" onClick={stopTracking}>
+                Stop Tracking
+              </button>
+            )}
+          </>
+        )}
       </div>
-      <div className="p-2">
-        Current Score = {imageScore} |{" "}
-        <span
-          className={
-            scoreDiff >= IMAGE_SCORE_DIFF_THRESHOLD ? "text-red-500" : ""
-          }
-        >
-          Diff = {scoreDiff}
-        </span>
+      <div className="flex justify-center">
+        <ScoreSection imageScore={imageScore} scoreDiff={scoreDiff} />
       </div>
       {isProcessing && <div className="p-2 text-xl">Processing...</div>}
       <Labels labels={labels} />
+    </div>
+  );
+}
+
+function ScoreSection({ imageScore, scoreDiff }) {
+  return (
+    <div className="p-2">
+      Current Score = {imageScore} |{" "}
+      <span
+        className={
+          scoreDiff >= IMAGE_SCORE_DIFF_THRESHOLD ? "text-red-500" : ""
+        }
+      >
+        Diff = {scoreDiff}
+      </span>
     </div>
   );
 }
@@ -266,7 +305,7 @@ function Labels({ labels }) {
     <div className="p-2">
       {labels.map((label) => (
         <div key={label.Name}>
-          {label.Name} at {label.Confidence}
+          {label.Name} (score = {label.Confidence})
         </div>
       ))}
     </div>
