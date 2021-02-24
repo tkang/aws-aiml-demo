@@ -52,7 +52,7 @@ const useLabels = () => {
   useEffect(() => {
     setSubscription(subscribeToLabelCreate());
 
-    //return () => subscription.unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   const subscribeToLabelCreate = async () => {
@@ -274,7 +274,7 @@ function VideoSection() {
                 <div>
                   Min Confidence (~99)
                   <input
-                    className="border border-black p-2 m-2"
+                    className="border p-2 m-2"
                     value={minConfidence}
                     onChange={(e) =>
                       setMinConfidence(e.target.value.replace(/\D/, ""))
@@ -282,14 +282,17 @@ function VideoSection() {
                   ></input>
                 </div>
                 <button
-                  className="border text-xl p-3 m-2"
+                  className="border-green-400 border-solid border-2 rounded-xl text-xl p-3 m-2"
                   onClick={startTracking}
                 >
                   Start Tracking
                 </button>
               </>
             ) : (
-              <button className="border text-xl p-3 m-2" onClick={stopTracking}>
+              <button
+                className="border-red-400 border-solid border-2 rounded-xl text-xl p-3 m-2"
+                onClick={stopTracking}
+              >
                 Stop Tracking
               </button>
             )}
@@ -301,7 +304,7 @@ function VideoSection() {
         <div>
           Score Diff Threshold :{" "}
           <input
-            className="border border-black p-2 m-2"
+            className="border p-2 m-2"
             value={imageScoreDiffThreshold}
             onChange={(e) =>
               setImageScoreDiffThreshold(e.target.value.replace(/\D/, ""))
