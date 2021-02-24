@@ -80,6 +80,8 @@ const useMovementDetected = () => {
   return { movementDetected, setMovementDetected };
 };
 
+const DEFAULT_MIN_CONFIDENCE = 50;
+
 function VideoSection() {
   const [video, setVideo] = useState(null);
   const [canvas, setCanvas] = useState({});
@@ -94,6 +96,7 @@ function VideoSection() {
   const [scoreDiff, setScoreDiff] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const { labels, setLabels } = useLabels();
+  const [minConfidence, setMinConfidence] = useState(DEFAULT_MIN_CONFIDENCE);
 
   useEffect(() => {
     console.log("hello");
@@ -225,7 +228,7 @@ function VideoSection() {
     try {
       const storagePutResult = await Storage.put(fileName, file);
       console.log(storagePutResult);
-      const imageInfo = { imageKey: fileName };
+      const imageInfo = { imageKey: fileName, minConfidence };
       const data = await API.graphql(
         graphqlOperation(queries.processImage, imageInfo)
       );
@@ -261,16 +264,26 @@ function VideoSection() {
       </video>
       <div className="flex items-center justify-center">
         {movementDetected ? (
-          <div className="text-xl p2">Movement Detected!</div>
+          <div className="text-xl p-2">Movement Detected!</div>
         ) : (
           <>
             {!isActive ? (
-              <button
-                className="border text-xl p-3 m-2"
-                onClick={startTracking}
-              >
-                Start Tracking
-              </button>
+              <>
+                Min Confidence (~99)
+                <input
+                  className="border border-black p-2 m-2"
+                  value={minConfidence}
+                  onChange={(e) =>
+                    setMinConfidence(e.target.value.replace(/\D/, ""))
+                  }
+                ></input>
+                <button
+                  className="border text-xl p-3 m-2"
+                  onClick={startTracking}
+                >
+                  Start Tracking
+                </button>
+              </>
             ) : (
               <button className="border text-xl p-3 m-2" onClick={stopTracking}>
                 Stop Tracking
