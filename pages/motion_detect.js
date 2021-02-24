@@ -7,7 +7,7 @@ import { Storage, API, graphqlOperation } from "aws-amplify";
 import * as queries from "../src/graphql/queries";
 import * as subscriptions from "../src/graphql/subscriptions";
 
-const IMAGE_SCORE_DIFF_THRESHOLD = 10000;
+const DEFAULT_IMAGE_SCORE_DIFF_THRESHOLD = 5000;
 
 const PIXEL_SCORE_THRESHOLD = 50;
 
@@ -52,7 +52,7 @@ const useLabels = () => {
   useEffect(() => {
     setSubscription(subscribeToLabelCreate());
 
-    return () => subscription.unsubscribe();
+    //return () => subscription.unsubscribe();
   }, []);
 
   const subscribeToLabelCreate = async () => {
@@ -97,7 +97,9 @@ function VideoSection() {
   const [isProcessing, setIsProcessing] = useState(false);
   const { labels, setLabels } = useLabels();
   const [minConfidence, setMinConfidence] = useState(DEFAULT_MIN_CONFIDENCE);
-
+  const [imageScoreDiffThreshold, setImageScoreDiffThreshold] = useState(
+    DEFAULT_IMAGE_SCORE_DIFF_THRESHOLD
+  );
   useEffect(() => {
     console.log("hello");
     const v = document.getElementById("video");
@@ -145,7 +147,7 @@ function VideoSection() {
   }, [isActive]);
 
   useEffect(() => {
-    if (scoreDiff <= IMAGE_SCORE_DIFF_THRESHOLD) {
+    if (scoreDiff <= imageScoreDiffThreshold) {
       console.log("No movement detected...");
       return;
     }
@@ -269,14 +271,16 @@ function VideoSection() {
           <>
             {!isActive ? (
               <>
-                Min Confidence (~99)
-                <input
-                  className="border border-black p-2 m-2"
-                  value={minConfidence}
-                  onChange={(e) =>
-                    setMinConfidence(e.target.value.replace(/\D/, ""))
-                  }
-                ></input>
+                <div>
+                  Min Confidence (~99)
+                  <input
+                    className="border border-black p-2 m-2"
+                    value={minConfidence}
+                    onChange={(e) =>
+                      setMinConfidence(e.target.value.replace(/\D/, ""))
+                    }
+                  ></input>
+                </div>
                 <button
                   className="border text-xl p-3 m-2"
                   onClick={startTracking}
@@ -292,8 +296,24 @@ function VideoSection() {
           </>
         )}
       </div>
-      <div className="flex justify-center">
-        <ScoreSection imageScore={imageScore} scoreDiff={scoreDiff} />
+      <div className="p-2">
+        {/*
+        <div>
+          Score Diff Threshold :{" "}
+          <input
+            className="border border-black p-2 m-2"
+            value={imageScoreDiffThreshold}
+            onChange={(e) =>
+              setImageScoreDiffThreshold(e.target.value.replace(/\D/, ""))
+            }
+          ></input>
+        </div>
+          */}
+        <ScoreSection
+          imageScore={imageScore}
+          scoreDiff={scoreDiff}
+          imageScoreDiffThreshold={imageScoreDiffThreshold}
+        />
       </div>
       {isProcessing && <div className="p-2 text-xl">Processing...</div>}
       <Labels labels={labels} />
@@ -301,17 +321,15 @@ function VideoSection() {
   );
 }
 
-function ScoreSection({ imageScore, scoreDiff }) {
+function ScoreSection({ imageScore, scoreDiff, imageScoreDiffThreshold }) {
   return (
-    <div className="p-2">
-      Current Score = {imageScore} |{" "}
-      <span
-        className={
-          scoreDiff >= IMAGE_SCORE_DIFF_THRESHOLD ? "text-red-500" : ""
-        }
+    <div>
+      <div>Current Score = {imageScore}</div>
+      <div
+        className={scoreDiff >= imageScoreDiffThreshold ? "text-red-500" : ""}
       >
-        Diff = {scoreDiff}
-      </span>
+        Diff from Previous = {scoreDiff}
+      </div>
     </div>
   );
 }
