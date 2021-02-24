@@ -1,9 +1,9 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const process = /* GraphQL */ `
-  query Process($imageKey: String!) {
-    process(imageKey: $imageKey) {
+export const processImage = /* GraphQL */ `
+  query ProcessImage($imageKey: String!, $minConfidence: Int) {
+    processImage(imageKey: $imageKey, minConfidence: $minConfidence) {
       id
       imageKey
       rekognitionData

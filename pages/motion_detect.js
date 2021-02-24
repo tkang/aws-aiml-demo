@@ -227,10 +227,12 @@ function VideoSection() {
       console.log(storagePutResult);
       const imageInfo = { imageKey: fileName };
       const data = await API.graphql(
-        graphqlOperation(queries.process, imageInfo)
+        graphqlOperation(queries.processImage, imageInfo)
       );
-      const rekognitionData = JSON.parse(data.data.process.rekognitionData);
-      console.log("data processed at = ", data.data.process);
+      const rekognitionData = JSON.parse(
+        data.data.processImage.rekognitionData
+      );
+      console.log("data processed at = ", data.data.processImage);
       console.log("rekognitionData: ", rekognitionData);
       setLabels(rekognitionData.Labels);
       //await Storage.remove(fileName);

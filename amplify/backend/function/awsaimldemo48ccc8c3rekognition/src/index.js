@@ -19,6 +19,8 @@ const saveData = gql`
   }
 `;
 
+const DEFAULT_MIN_CONFIDENCE = 70;
+
 exports.handler = function (event, context) {
   //eslint-disable-line
   var params = {
@@ -29,7 +31,9 @@ exports.handler = function (event, context) {
       },
     },
     MaxLabels: 10,
-    MinConfidence: 70,
+    MinConfidence: event.arguments.minConfidence
+      ? event.arguments.minConfidence
+      : DEFAULT_MIN_CONFIDENCE,
   };
 
   console.log("params = ", params);

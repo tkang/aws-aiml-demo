@@ -6,6 +6,6 @@ type ImageData @model @auth(rules: [{ allow: private }, { allow: public }]) {
 }
 
 type Query {
-  process(imageKey: String!): ImageData
+  processImage(imageKey: String!, minConfidence: Int): ImageData
     @function(name: "awsaimldemo48ccc8c3rekognition-${env}")
 }
