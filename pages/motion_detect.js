@@ -210,14 +210,17 @@ function VideoSection() {
     }
     let file = new Blob([new Uint8Array(array)], { type: "image/jpg" });
     const fileName = `images/${uuidv4()}_snapshot.jpg`;
+    console.log("fileName: ", fileName);
 
     return { file, fileName };
   };
 
-  const saveImageFromCanvas = async () => {
+  const saveImageFromCanvas = () => {
     const { file, fileName } = createImageFile();
-    console.log("fileName: ", fileName);
+    processImage({ fileName, file });
+  };
 
+  const processImage = async ({ fileName, file }) => {
     setIsProcessing(true);
     try {
       const storagePutResult = await Storage.put(fileName, file);
